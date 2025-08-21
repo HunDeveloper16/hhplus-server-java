@@ -26,6 +26,9 @@ public class UserBalanceHistory {
     @JoinColumn(name = "BALANCE_SEQ_NO", nullable = false)
     private UserBalance userBalance;
 
+    @Column(name = "USER_ID", nullable = false, length = 50)
+    private String userId;
+
     @Column(name = "AMOUNT", nullable = false)
     private Long amount;
 
@@ -42,6 +45,7 @@ public class UserBalanceHistory {
         history.userBalance = userBalance;
         history.amount = amount;
         history.type = BalanceType.CHARGE;
+        history.userId = userBalance.getUser().getUserId();
         history.regDt = LocalDateTime.now();
         return history;
     }
@@ -51,6 +55,7 @@ public class UserBalanceHistory {
         history.userBalance = userBalance;
         history.amount = amount;
         history.type = BalanceType.USE;
+        history.userId = userBalance.getUser().getUserId();
         history.regDt = LocalDateTime.now();
         return history;
     }

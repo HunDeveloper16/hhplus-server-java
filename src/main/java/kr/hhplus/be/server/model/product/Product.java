@@ -16,6 +16,7 @@ public class Product {
 
     @Id
     @Column(name = "SEQ_NO", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seqNo;
 
     @Column(name = "PRODUCT_ID", nullable = false, length = 50)

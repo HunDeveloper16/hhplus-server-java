@@ -15,6 +15,7 @@ public class ProductStockHistory {
 
     @Id
     @Column(name = "SEQ_NO", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seqNo;
 
     @ManyToOne(fetch = FetchType.LAZY)

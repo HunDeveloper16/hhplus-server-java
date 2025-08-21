@@ -1,15 +1,20 @@
 package kr.hhplus.be.server.model.user;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.common.exception.MinusPointException;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "user_balance")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserBalance {
 
     @Id
@@ -27,13 +32,12 @@ public class UserBalance {
     @Column(name = "MOD_DT")
     private LocalDateTime modDt;
 
-    // UserBalance → UserBalanceHistory 1:N
-//    @OneToMany(mappedBy = "userBalance", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<UserBalanceHistory> histories = new ArrayList<>();
-
-
     // 잔액을 충전하고 히스토리를 생성합니다.
-    public UserBalanceHistory addBalance(Long balance){
+    public UserBalanceHistory addBalance(long balance){
+        if(balance < 0L){
+            throw new MinusPointException("음수의 포인트는 충전될 수 없습니다.");
+        }
+
         this.balance += balance;
         this.modDt = LocalDateTime.now();
 
