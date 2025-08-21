@@ -36,7 +36,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 회원의 잔액 조회시 에러가 발생한다.")
-    public void test1() {
+    public void getUserBalance_WhenUserNotExists_ShouldThrowNotFoundException() {
         //given
         String userId = "non_exist_user";
 
@@ -48,7 +48,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("음수의 잔액 충전 시 충전이 실패한다.")
-    public void test2() {
+    public void addBalance_WhenAmountIsNegative_ShouldThrowMinusPointException() {
         // given
         long chargePoint = -1000;
         long currentPoint = 5000;
