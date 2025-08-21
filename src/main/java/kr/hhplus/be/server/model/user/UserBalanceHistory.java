@@ -32,6 +32,9 @@ public class UserBalanceHistory {
     @Column(name = "AMOUNT", nullable = false)
     private Long amount;
 
+    @Column(name = "REMAINING_BALANCE", nullable = false)
+    private Long remainingBalance;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "TYPE", nullable = false, length = 10)
     private BalanceType type;
@@ -41,23 +44,25 @@ public class UserBalanceHistory {
 
     // 정적 팩토리 메서드
     public static UserBalanceHistory ofCharge(UserBalance userBalance, Long amount) {
-        UserBalanceHistory history = new UserBalanceHistory();
-        history.userBalance = userBalance;
-        history.amount = amount;
-        history.type = BalanceType.CHARGE;
-        history.userId = userBalance.getUser().getUserId();
-        history.regDt = LocalDateTime.now();
-        return history;
+        return UserBalanceHistory.builder()
+                .userBalance(userBalance)
+                .amount(amount)
+                .type(BalanceType.CHARGE)
+                .remainingBalance(userBalance.getBalance())
+                .userId(userBalance.getUser().getUserId())
+                .regDt(LocalDateTime.now())
+                .build();
     }
 
     public static UserBalanceHistory ofUse(UserBalance userBalance, Long amount) {
-        UserBalanceHistory history = new UserBalanceHistory();
-        history.userBalance = userBalance;
-        history.amount = amount;
-        history.type = BalanceType.USE;
-        history.userId = userBalance.getUser().getUserId();
-        history.regDt = LocalDateTime.now();
-        return history;
+        return UserBalanceHistory.builder()
+                .userBalance(userBalance)
+                .amount(amount)
+                .type(BalanceType.USE)
+                .remainingBalance(userBalance.getBalance())
+                .userId(userBalance.getUser().getUserId())
+                .regDt(LocalDateTime.now())
+                .build();
     }
 
 }

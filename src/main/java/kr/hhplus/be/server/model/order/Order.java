@@ -2,13 +2,21 @@ package kr.hhplus.be.server.model.order;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.common.enums.OrderStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "`order`") // order는 예약어이므로 백틱 처리
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     @Id
@@ -22,15 +30,29 @@ public class Order {
     @Column(name = "TOTAL_AMOUNT", nullable = false)
     private Long totalAmount;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS", nullable = false, length = 20)
-    private OrderStatus status;
-
     @Column(name = "REG_DT", nullable = false)
     private LocalDateTime regDt;
 
-    // 주문 -> 주문상품 1:N
-//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<OrderItem> items = new ArrayList<>();
+    // 양방향 매핑
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    // 연관관계 편의 메서드
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void addOrderItems(List<OrderItem> orderItems) {
+        orderItems.forEach(this::addOrderItem);
+    }
+
+
+    public static Order of(String orderNo, Long totalAmount){
+        return Order.builder()
+                .orderNo(orderNo)
+                .totalAmount(totalAmount)
+                .build();
+    }
 
 }

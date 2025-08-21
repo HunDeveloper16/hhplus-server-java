@@ -45,9 +45,17 @@ public class ProductStock {
         }
     }
 
+    public void reduceStock(long quantity){
+        validateProductStock(quantity);
 
-    // 연관관계 매핑 (1:N)
-//    @OneToMany(mappedBy = "productStock", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ProductStockHistory> histories;
+        this.stock = stock - quantity;
+    }
+
+    public void reduceStockByOrder(long quantity){
+        validateProductStatus();
+
+        reduceStock(quantity);
+    }
+
 }
 

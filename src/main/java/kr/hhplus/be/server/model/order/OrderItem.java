@@ -1,13 +1,17 @@
 package kr.hhplus.be.server.model.order;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import kr.hhplus.be.server.dto.common.ProductOrderResult;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "order_item")
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderItem {
 
     @Id
@@ -15,6 +19,7 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seqNo;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_SEQ_NO", nullable = false)
     private Order order;
@@ -29,12 +34,22 @@ public class OrderItem {
     private String productName;
 
     @Column(name = "QUANTITY", nullable = false)
-    private Integer quantity;
+    private Long quantity;
 
     @Column(name = "TOTAL_AMOUNT", nullable = false)
     private Long totalAmount;
 
     @Column(name = "REG_DT", nullable = false)
     private LocalDateTime regDt;
+
+    public static OrderItem from(ProductOrderResult.ProductOrderItem productOrderItem) {
+        return OrderItem.builder()
+                .productStockSeqNo(productOrderItem.getProductStockSeqNo())
+                .productName(productOrderItem.getProductName())
+                .quantity(productOrderItem.getQuantity())
+                .totalAmount(productOrderItem.getTotalAmount())
+                .regDt(LocalDateTime.now())
+                .build();
+    }
 
 }

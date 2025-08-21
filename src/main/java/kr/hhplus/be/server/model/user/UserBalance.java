@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.model.user;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.common.exception.InsufficientBalanceException;
 import kr.hhplus.be.server.common.exception.MinusPointException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,24 +33,22 @@ public class UserBalance {
     @Column(name = "MOD_DT")
     private LocalDateTime modDt;
 
-    // 잔액을 충전하고 히스토리를 생성합니다.
-    public UserBalanceHistory addBalance(long balance){
+    public void addBalance(long balance){
         if(balance < 0L){
             throw new MinusPointException("음수의 포인트는 충전될 수 없습니다.");
         }
 
         this.balance += balance;
         this.modDt = LocalDateTime.now();
-
-        return UserBalanceHistory.ofCharge(this, balance);
     }
 
-    // 잔액을 차감하고 히스토리를 생성합니다.
-    public UserBalanceHistory minusBalance(Long balance){
+    public void deductBalance(Long balance){
+        if(this.balance < balance) {
+            throw new InsufficientBalanceException("잔액이 부족합니다.");
+        }
+
         this.balance -= balance;
         this.modDt = LocalDateTime.now();
-
-        return UserBalanceHistory.ofUse(this, balance);
     }
 
 }

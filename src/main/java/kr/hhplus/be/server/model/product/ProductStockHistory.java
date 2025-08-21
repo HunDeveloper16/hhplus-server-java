@@ -2,14 +2,18 @@ package kr.hhplus.be.server.model.product;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.common.enums.StockHistoryType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "product_stock_history")
 public class ProductStockHistory {
 
@@ -23,7 +27,7 @@ public class ProductStockHistory {
     private ProductStock productStock;
 
     @Column(name = "QUANTITY", nullable = false)
-    private Integer quantity;
+    private Long quantity;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TYPE", nullable = false, length = 10)
@@ -31,5 +35,15 @@ public class ProductStockHistory {
 
     @Column(name = "REG_DT", nullable = false)
     private LocalDateTime regDt;
+
+
+    public static ProductStockHistory ofOrder(ProductStock productStock, long quantity){
+        return ProductStockHistory.builder()
+                .productStock(productStock)
+                .quantity(quantity)
+                .type(StockHistoryType.ORDER)
+                .regDt(LocalDateTime.now())
+                .build();
+    }
 
 }
