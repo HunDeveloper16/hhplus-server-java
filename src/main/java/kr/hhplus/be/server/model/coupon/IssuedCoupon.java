@@ -28,7 +28,7 @@ public class IssuedCoupon {
     private String couponId;
 
     @Column(name = "USER_ID", nullable = false)
-    private Long userId;
+    private String userId;
 
     @Column(name = "COUPON_CODE", nullable = false, unique = true, length = 50)
     private String couponCode;
@@ -37,14 +37,29 @@ public class IssuedCoupon {
     @Column(name = "STATUS", length = 20)
     private IssuedCouponStatus status = IssuedCouponStatus.ISSUED;
 
-    @Column(name = "ISSUED_DT", nullable = false, updatable = false)
-    private LocalDateTime issuedDt;
-
-    @Column(name = "USED_DT")
-    private LocalDateTime usedDt;
+    @Column(name = "REG_DT", nullable = false, updatable = false)
+    private LocalDateTime regDt;
 
     // 쿠폰 사용 내역 (1:N)
     @OneToMany(mappedBy = "issuedCoupon", fetch = FetchType.LAZY)
     private List<CouponUsageHistory> usageHistories;
+
+    public static IssuedCoupon of(Coupon coupon, String userId) {
+        return IssuedCoupon.builder()
+                .coupon(coupon)
+                .couponId(coupon.getCouponId())
+                .userId(userId)
+                .couponCode(generateCouponCode())
+                .status(IssuedCouponStatus.ISSUED)
+                .build();
+    }
+
+    private static String generateCouponCode() {
+        return String.format("COUPON_%d", System.currentTimeMillis());
+    }
+
+    public boolean isValid() {
+        return status == IssuedCouponStatus.ISSUED || status == IssuedCouponStatus.USED;
+    }
 
 }

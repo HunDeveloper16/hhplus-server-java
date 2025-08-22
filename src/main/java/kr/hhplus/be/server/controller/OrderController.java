@@ -24,7 +24,7 @@ public class OrderController {
      * @param order 주문 정보
      */
     @PostMapping("/payment")
-    public ResponseEntity<?> orderPayment(@PathVariable OrderRequestDto.Order order) {
+    public ResponseEntity<?> orderPayment(@RequestBody OrderRequestDto.Order order) {
 
         orderService.orderPayment(order);
 

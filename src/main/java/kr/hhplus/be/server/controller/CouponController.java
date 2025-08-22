@@ -1,13 +1,13 @@
 package kr.hhplus.be.server.controller;
 
 import kr.hhplus.be.server.dto.coupon.CouponRequestDto;
+import kr.hhplus.be.server.dto.coupon.CouponResponseDto;
 import kr.hhplus.be.server.service.CouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,12 +16,31 @@ public class CouponController {
 
     private final CouponService couponService;
 
+    /**
+     * 쿠폰을 발급합니다.
+     *
+     * 요구사항: 사용자는 선착순으로 할인 쿠폰을 발급받을 수 있습니다.
+     *
+     * @param issue 발급 요청 정보
+     */
     @PostMapping("/issue")
-    public ResponseEntity<?> orderPayment(@PathVariable CouponRequestDto.Issue issue) {
+    public ResponseEntity<?> couponIssue(@RequestBody CouponRequestDto.Issue issue) {
 
         couponService.issueCouponsByArrivalOrder(issue);
 
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 보유 쿠폰 목록을 조회합니다.
+     *
+     * @param userId 발급 요청 정보
+     */
+    @PostMapping("/me/{userId}")
+    public ResponseEntity<List<CouponResponseDto.UserCoupon>> getUserCouponList(@PathVariable String userId) {
+
+        return ResponseEntity.ok(couponService.getUserCouponList(userId));
+
     }
 
 }
