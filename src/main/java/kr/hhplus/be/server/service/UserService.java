@@ -1,5 +1,8 @@
 package kr.hhplus.be.server.service;
 
+import kr.hhplus.be.server.common.enums.BalanceType;
+import kr.hhplus.be.server.dto.common.UserOrderRequest;
+import kr.hhplus.be.server.dto.common.UserOrderResult;
 import kr.hhplus.be.server.dto.user.UserRequestDto;
 import kr.hhplus.be.server.model.user.UserBalance;
 import kr.hhplus.be.server.model.user.UserBalanceHistory;
@@ -9,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -58,19 +63,30 @@ public class UserService {
     /**
      * 유저 잔액을 차감합니다.
      *
-     * @param userId 유저 아이디
-     * @param amount 차감액
+     * @param orderRequest 주문 요청 객체
      */
     @Transactional
-    public void deductBalance(String userId, Long amount){
+    public UserOrderResult deductBalance(UserOrderRequest orderRequest){
         // 유저 잔액 조회
-        UserBalance userBalance = getUserBalanceInfoByUserId(userId);
+        UserBalance userBalance = getUserBalanceInfoByUserId(orderRequest.getUserId());
 
         // 잔액 차감
-        userBalance.deductBalance(amount);
+        userBalance.deductBalance(orderRequest.getTotalAmount());
+
+        // 잔액 저장
+        userBalanceRepository.save(userBalance);
 
         // 내역 저장
-        userBalanceHistoryRepository.save(UserBalanceHistory.ofUse(userBalance, amount));
+        userBalanceHistoryRepository.save(UserBalanceHistory.builder()
+                .userBalance(userBalance)
+                .amount(orderRequest.getTotalAmount())
+                .type(BalanceType.USE)
+                .remainingBalance(userBalance.getBalance())
+                .userId(orderRequest.getUserId())
+                .regDt(LocalDateTime.now())
+                .build());
+
+        return new UserOrderResult(userBalance.getBalance());
     }
 
     @Transactional(readOnly = true)
