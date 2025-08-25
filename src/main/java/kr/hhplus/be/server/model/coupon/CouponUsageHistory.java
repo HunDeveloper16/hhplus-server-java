@@ -1,7 +1,10 @@
 package kr.hhplus.be.server.model.coupon;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,8 +29,8 @@ public class CouponUsageHistory {
     @Column(name = "COUPON_ID", nullable = false, length = 50)
     private String couponId;
 
-    @Column(name = "ORDER_ID", nullable = false, length = 50)
-    private String orderId;
+    @Column(name = "ORDER_NO", length = 50)
+    private String orderNo;
 
     @Column(name = "USER_ID", nullable = false, length = 50)
     private String userId;
@@ -43,4 +46,5 @@ public class CouponUsageHistory {
 
     @Column(name = "REG_DT", nullable = false, updatable = false)
     private LocalDateTime regDt;
+
 }

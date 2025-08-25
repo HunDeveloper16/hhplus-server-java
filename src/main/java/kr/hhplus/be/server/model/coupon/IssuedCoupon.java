@@ -54,12 +54,21 @@ public class IssuedCoupon {
                 .build();
     }
 
+    public void validateCouponStatus(){
+        coupon.validateCouponStatus();
+    }
+
+
     private static String generateCouponCode() {
         return String.format("COUPON_%d", System.currentTimeMillis());
     }
 
     public boolean isValid() {
         return status == IssuedCouponStatus.ISSUED || status == IssuedCouponStatus.USED;
+    }
+
+    public void useCoupon(){
+        this.status = IssuedCouponStatus.USED;
     }
 
 }

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,14 @@ public class Order {
     @Column(name = "ORDER_NO", nullable = false, length = 50)
     private String orderNo;
 
+    @Column(name = "USER_ID", nullable = false, length = 50)
+    private String userId;
+
     @Column(name = "TOTAL_AMOUNT", nullable = false)
-    private Long totalAmount;
+    private BigDecimal totalAmount;
+
+    @Column(name = "DISCOUNT_AMOUNT", nullable = false)
+    private BigDecimal discountAmount;
 
     @Column(name = "REG_DT", nullable = false)
     private LocalDateTime regDt;
@@ -45,14 +52,6 @@ public class Order {
 
     public void addOrderItems(List<OrderItem> orderItems) {
         orderItems.forEach(this::addOrderItem);
-    }
-
-
-    public static Order of(String orderNo, Long totalAmount){
-        return Order.builder()
-                .orderNo(orderNo)
-                .totalAmount(totalAmount)
-                .build();
     }
 
 }

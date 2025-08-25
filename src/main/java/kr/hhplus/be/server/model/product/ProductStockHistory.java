@@ -33,17 +33,11 @@ public class ProductStockHistory {
     @Column(name = "TYPE", nullable = false, length = 10)
     private StockHistoryType type;
 
+    @Column(name = "ORDER_NO", nullable = false)
+    private String orderNo;
+
     @Column(name = "REG_DT", nullable = false)
     private LocalDateTime regDt;
 
-
-    public static ProductStockHistory ofOrder(ProductStock productStock, long quantity){
-        return ProductStockHistory.builder()
-                .productStock(productStock)
-                .quantity(quantity)
-                .type(StockHistoryType.ORDER)
-                .regDt(LocalDateTime.now())
-                .build();
-    }
 
 }

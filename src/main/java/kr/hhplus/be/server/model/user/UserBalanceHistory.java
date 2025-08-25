@@ -39,6 +39,9 @@ public class UserBalanceHistory {
     @Column(name = "TYPE", nullable = false, length = 10)
     private BalanceType type;
 
+    @Column(name = "ORDER_NO", length = 50)
+    private String orderNo;
+
     @Column(name = "REG_DT", nullable = false)
     private LocalDateTime regDt;
 
@@ -48,17 +51,6 @@ public class UserBalanceHistory {
                 .userBalance(userBalance)
                 .amount(amount)
                 .type(BalanceType.CHARGE)
-                .remainingBalance(userBalance.getBalance())
-                .userId(userBalance.getUser().getUserId())
-                .regDt(LocalDateTime.now())
-                .build();
-    }
-
-    public static UserBalanceHistory ofUse(UserBalance userBalance, Long amount) {
-        return UserBalanceHistory.builder()
-                .userBalance(userBalance)
-                .amount(amount)
-                .type(BalanceType.USE)
                 .remainingBalance(userBalance.getBalance())
                 .userId(userBalance.getUser().getUserId())
                 .regDt(LocalDateTime.now())
