@@ -1,20 +1,27 @@
 package kr.hhplus.be.server.service;
 
 
+import kr.hhplus.be.server.common.enums.DiscountType;
 import kr.hhplus.be.server.common.exception.CouponQuantityExceededException;
 import kr.hhplus.be.server.common.exception.DuplicateCouponException;
 import kr.hhplus.be.server.common.exception.NotFoundException;
+import kr.hhplus.be.server.dto.common.CouponOrderRequest;
+import kr.hhplus.be.server.dto.common.CouponOrderResult;
 import kr.hhplus.be.server.dto.coupon.CouponRequestDto;
 import kr.hhplus.be.server.dto.coupon.CouponResponseDto;
 import kr.hhplus.be.server.model.coupon.Coupon;
+import kr.hhplus.be.server.model.coupon.CouponUsageHistory;
 import kr.hhplus.be.server.model.coupon.IssuedCoupon;
 import kr.hhplus.be.server.repository.coupon.CouponRepository;
+import kr.hhplus.be.server.repository.coupon.CouponUsageHistoryRepository;
 import kr.hhplus.be.server.repository.coupon.IssuedCouponRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +31,7 @@ public class CouponService {
 
     private final CouponRepository couponRepository;
     private final IssuedCouponRepository issuedCouponRepository;
+    private final CouponUsageHistoryRepository couponUsageHistoryRepository;
 
     /**
      * 선착순으로 쿠폰을 발급합니다.
@@ -79,6 +87,63 @@ public class CouponService {
      */
     public List<CouponResponseDto.UserCoupon> getUserCouponList(String userId){
         return issuedCouponRepository.findByCouponId(userId).stream().map(CouponResponseDto.UserCoupon::from).toList();
+    }
+
+    /**
+     * 주문에 대해 할인을 적용합니다.
+     *
+     * 요구사항 : 주문 시에 유효한 할인 쿠폰을 함께 제출하면, 전체 주문금액에 대해 할인 혜택을 부여
+     *
+     * @param orderRequest 주문 요청 객체
+     *
+     * @return 쿠폰 적용 결과
+     */
+    @Transactional
+    public CouponOrderResult applyCouponDiscount(CouponOrderRequest orderRequest) {
+        IssuedCoupon issuedCoupon =  issuedCouponRepository.findByCouponIdAndUserId(orderRequest.getCouponId(), orderRequest.getUserId())
+                .orElseThrow(() -> new NotFoundException("쿠폰 정보를 찾을 수 없습니다."));
+
+        // 상태 검증
+        issuedCoupon.validateCouponStatus();
+
+        BigDecimal finalAmount = BigDecimal.ZERO, discountAmount = BigDecimal.ZERO;
+
+       // 정액
+       if(issuedCoupon.getCoupon().getDiscountType().equals(DiscountType.FIXED)){
+           finalAmount = BigDecimal.valueOf(orderRequest.getTotalAmount()).subtract(issuedCoupon.getCoupon().getDiscountValue());
+
+           // 할인액 = 고정값
+           discountAmount = issuedCoupon.getCoupon().getDiscountValue();
+        }
+
+       // 정률
+        if(issuedCoupon.getCoupon().getDiscountType().equals(DiscountType.PERCENTAGE)){
+            BigDecimal discountRate = issuedCoupon.getCoupon().getDiscountValue().divide(new BigDecimal("100"));
+            finalAmount = BigDecimal.valueOf(orderRequest.getTotalAmount()).multiply(discountRate);
+
+            // 할인액 = 기존 값 - 정률 적용 값
+            discountAmount = BigDecimal.valueOf(orderRequest.getTotalAmount()).subtract(finalAmount);
+        }
+
+        // 쿠폰 사용 처리
+        issuedCoupon.useCoupon();
+
+        // 쿠폰 정보 저장
+        issuedCouponRepository.save(issuedCoupon);
+
+        // 쿠폰 사용 내역 저장
+        couponUsageHistoryRepository.save(CouponUsageHistory.builder()
+                .issuedCoupon(issuedCoupon)
+                .couponId(orderRequest.getCouponId())
+                .orderNo(orderRequest.getOrderNo())
+                .userId(orderRequest.getUserId())
+                .originalAmount(BigDecimal.valueOf(orderRequest.getTotalAmount()))
+                .discountAmount(discountAmount)
+                .finalAmount(finalAmount)
+                .regDt(LocalDateTime.now())
+                .build());
+
+        return new CouponOrderResult(discountAmount, finalAmount);
     }
 
 }
