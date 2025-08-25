@@ -57,8 +57,8 @@ public class Coupon{
     private LocalDateTime regDt;
 
     // 발급 쿠폰 연관관계 (1:N)
-    @OneToMany(mappedBy = "coupon", fetch = FetchType.LAZY)
-    private List<IssuedCoupon> issuedCoupons;
+//    @OneToMany(mappedBy = "coupon", fetch = FetchType.LAZY)
+//    private List<IssuedCoupon> issuedCoupons;
 
 
     // 쿠폰 발급시 유효성 검증
@@ -66,11 +66,12 @@ public class Coupon{
         // 상태 검증
         validateCouponStatus();
         // 수량 검증
-        validateQuantityForNewIssue();
+//        validateQuantityForNewIssue();
         // 중복 발급 검증
-        validateDuplicateIssue(userId);
+//        validateDuplicateIssue(userId);
     }
 
+    // 쿠폰 발급 및 객체 생성
     public IssuedCoupon createIssuedCoupon(String userId) {
         validateCouponForNewIssue(userId);
         return IssuedCoupon.of(this, userId);
@@ -84,29 +85,29 @@ public class Coupon{
     }
 
     // 발급 수량 검증 (한 번 더 발급 시 초과 여부)
-    private void validateQuantityForNewIssue() {
-        long currentValidCount = getValidIssuedCount();
-
-        if (currentValidCount + 1 > totalQuantity) {
-            throw new CouponQuantityExceededException("쿠폰 발급 최대 수량을 초과하였습니다.");
-        }
-    }
+//    private void validateQuantityForNewIssue() {
+//        long currentValidCount = getValidIssuedCount();
+//
+//        if (currentValidCount + 1 > totalQuantity) {
+//            throw new CouponQuantityExceededException("쿠폰 발급 최대 수량을 초과하였습니다.");
+//        }
+//    }
 
     // 중복 발급 검증
-    private void validateDuplicateIssue(String userId) {
-        boolean hasDuplicate = issuedCoupons.stream().anyMatch(issued -> issued.getUserId().equals(userId) && issued.isValid());
-
-        if (hasDuplicate) {
-            throw new DuplicateCouponException("이미 발급받은 쿠폰입니다.");
-        }
-    }
+//    private void validateDuplicateIssue(String userId) {
+//        boolean hasDuplicate = issuedCoupons.stream().anyMatch(issued -> issued.getUserId().equals(userId) && issued.isValid());
+//
+//        if (hasDuplicate) {
+//            throw new DuplicateCouponException("이미 발급받은 쿠폰입니다.");
+//        }
+//    }
 
     // 유효한 발급 쿠폰 수량 계산
-    private long getValidIssuedCount() {
-        return issuedCoupons.stream()
-                .filter(IssuedCoupon::isValid) // ISSUED, USED 상태만
-                .count();
-    }
+//    private long getValidIssuedCount() {
+//        return issuedCoupons.stream()
+//                .filter(IssuedCoupon::isValid) // ISSUED, USED 상태만
+//                .count();
+//    }
 
 
 }
