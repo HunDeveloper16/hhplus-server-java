@@ -2,6 +2,8 @@ package kr.hhplus.be.server.dto.order;
 
 import kr.hhplus.be.server.common.exception.NotFoundException;
 import kr.hhplus.be.server.common.exception.OrderItemQuantityZeroException;
+import kr.hhplus.be.server.dto.common.CouponOrderRequest;
+import kr.hhplus.be.server.dto.common.CouponOrderResult;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,11 +16,8 @@ public class OrderRequestDto {
     public static class Order{
         private String userId;
 //        private Long paymentAmount; 결제는 기 충전된 잔액을 기반으로 진행.
+        private String couponId;
         private List<OrderProduct> orderProductList;
-
-        public List<String> getProductIdList() {
-            return orderProductList.stream().map(OrderProduct::getProductId).toList();
-        }
 
         public void validateOrderItem(){
             validateEmptyOrderItem();

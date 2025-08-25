@@ -20,4 +20,6 @@ public interface IssuedCouponRepository extends JpaRepository<IssuedCoupon, Long
     @Query("SELECT EXISTS(SELECT 1 FROM IssuedCoupon ic WHERE ic.couponId = :couponId AND ic.userId = :userId)")
     boolean existsByCouponIdAndUserId(@Param("couponId") String couponId, @Param("userId") String userId);
 
+    Optional<IssuedCoupon> findByCouponIdAndUserId(String couponId, String userId);
+
 }
