@@ -1,11 +1,17 @@
 package kr.hhplus.be.server.dto.coupon;
 
 import kr.hhplus.be.server.common.exception.InvalidRequestException;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class CouponRequestDto {
 
     @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Issue {
         private String couponId;
         private String userId;

@@ -23,11 +23,12 @@ public interface ProductStockHistoryRepository extends JpaRepository<ProductStoc
      *
      * @return ProductSalesDto
      */
-    @Query("SELECT new kr.hhplus.be.server.dto.product.ProductSalesDto(SUM(p.quantity) AS totalSales, p.productSeqNo) " + // 위치 기반
+    @Query(value = "SELECT new kr.hhplus.be.server.dto.product.ProductSalesDto(SUM(p.quantity) AS totalSales, p.productSeqNo) " + // 위치 기반
             "FROM ProductStockHistory p " +
             "WHERE p.regDt BETWEEN :start AND :end " +
             "GROUP BY p.productSeqNo " +
-            "ORDER BY SUM(p.quantity) DESC")
+            "ORDER BY SUM(p.quantity) DESC",
+            nativeQuery = true)
     List<ProductSalesDto> findProductSalesRankingByPeriod(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, Pageable pageable);
 
 

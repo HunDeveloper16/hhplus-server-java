@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.common.enums.CouponStatus;
 import kr.hhplus.be.server.common.enums.DiscountType;
 import kr.hhplus.be.server.common.exception.CouponNotActiveException;
-import kr.hhplus.be.server.common.exception.CouponQuantityExceededException;
-import kr.hhplus.be.server.common.exception.DuplicateCouponException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Entity
@@ -51,6 +48,7 @@ public class Coupon{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 20)
+    @Builder.Default
     private CouponStatus status = CouponStatus.ACTIVE;
 
     @Column(name = "REG_DT", nullable = false)

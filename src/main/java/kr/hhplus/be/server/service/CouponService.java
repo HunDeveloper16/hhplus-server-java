@@ -45,14 +45,13 @@ public class CouponService {
      *
      * @param request 발급 요청 정보
      */
-    @Transactional(timeout = 10)
     public void issueCouponsByArrivalOrder(CouponRequestDto.Issue request) {
         // 요청 값 검증
         request.validateRequest();
 
         try{
-            // 쿠폰 정보 조회. lock 획득.
-            Coupon coupon = couponRepository.findByCouponIdWithPessimisticLock(request.getCouponId())
+            // 쿠폰 정보 조회.
+            Coupon coupon = couponRepository.findByCouponId(request.getCouponId())
                     .orElseThrow(() -> new NotFoundException("쿠폰 정보를 찾을 수 없습니다."));
 
             // 발급된 쿠폰 갯수 조회
@@ -73,7 +72,6 @@ public class CouponService {
             // 쿠폰 발급 처리
             IssuedCoupon issuedCoupon = coupon.createIssuedCoupon(request.getUserId());
             issuedCouponRepository.save(issuedCoupon);
-            // lock 반납.
         }catch (Exception e){
             log.error("쿠폰 발급 처리 실패. 쿠폰 아이디 : {} , 사용자 정보 : {}", request.getCouponId(), request.getUserId());
             throw e;

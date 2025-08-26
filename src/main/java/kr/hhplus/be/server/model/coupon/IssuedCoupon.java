@@ -35,6 +35,7 @@ public class IssuedCoupon {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 20)
+    @Builder.Default
     private IssuedCouponStatus status = IssuedCouponStatus.ISSUED;
 
     @Column(name = "REG_DT", nullable = false, updatable = false)
