@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.dto.product;
 
+import kr.hhplus.be.server.model.product.Product;
 import kr.hhplus.be.server.model.product.ProductStock;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,24 @@ public class ProductResponseDto {
                     .stock(stock.getStock())
                     .build();
         }
+    }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RecentSalesProduct{
+        private String productId;
+        private String productName;
+        private Long totalSales;
+
+        public static RecentSalesProduct from(Product product){
+            return RecentSalesProduct.builder()
+                    .productId(product.getProductId())
+                    .productName(product.getName())
+                    .totalSales(product.getTotalSales())
+                    .build();
+        }
+
     }
 
 }

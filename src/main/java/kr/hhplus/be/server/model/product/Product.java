@@ -2,9 +2,9 @@ package kr.hhplus.be.server.model.product;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.common.enums.ProductStatus;
-import kr.hhplus.be.server.common.enums.StockHistoryType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -34,6 +34,10 @@ public class Product {
 
     @Column(name = "REG_DT", nullable = false)
     private LocalDateTime regDt;
+
+    @Setter
+    @Transient
+    private Long totalSales;
 
     public boolean isCloseStatus(){
         return this.status.equals(ProductStatus.CLOSE);

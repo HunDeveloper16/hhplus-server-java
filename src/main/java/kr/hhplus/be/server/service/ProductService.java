@@ -1,27 +1,37 @@
 package kr.hhplus.be.server.service;
 
+import ch.qos.logback.core.util.StringUtil;
 import kr.hhplus.be.server.common.enums.StockHistoryType;
 import kr.hhplus.be.server.common.exception.NotFoundException;
 import kr.hhplus.be.server.dto.common.ProductOrderRequest;
 import kr.hhplus.be.server.dto.common.ProductOrderResult;
 import kr.hhplus.be.server.dto.product.ProductResponseDto;
+import kr.hhplus.be.server.dto.product.ProductSalesDto;
+import kr.hhplus.be.server.model.product.Product;
 import kr.hhplus.be.server.model.product.ProductStock;
 import kr.hhplus.be.server.model.product.ProductStockHistory;
+import kr.hhplus.be.server.repository.product.ProductRepository;
 import kr.hhplus.be.server.repository.product.ProductStockHistoryRepository;
 import kr.hhplus.be.server.repository.product.ProductStockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+
+    private final ProductRepository productRepository;
 
     private final ProductStockRepository productStockRepository;
 
@@ -107,6 +117,43 @@ public class ProductService {
         if(stocks==null && stocks.isEmpty()) throw new NotFoundException("재고 정보를 찾을 수 없습니다.");
 
         return stocks;
+    }
+
+    /**
+     * 최근 3일간 가장 많이 팔린 상위 5개의 상품을 조회합니다.
+     *
+     * @return 상위 5개 상품 목록
+     */
+    @Transactional(readOnly = true)
+    public List<ProductResponseDto.RecentSalesProduct> getRecentSalesTop5Ranking(){
+        // 최근 3일간 가장 많이 팔린 5개 상품 조회
+        List<ProductSalesDto> result = productStockHistoryRepository.findProductSalesRankingByPeriod(LocalDateTime.now()
+                , LocalDateTime.now().minusDays(3)
+                , PageRequest.of(0, 5));
+
+        if(result.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        List<Long> productSeqNos = result.stream().map(ProductSalesDto::getProductSeqNo).toList();
+
+        // 위에서 조회된 상품 일련 번호로 상품 정보 조회
+        List<Product> productList = productRepository.findProductByProductSeqNos(productSeqNos);
+
+        // Product 매핑을 빠르게 하기 위해 Map 변환
+        Map<Long, ProductSalesDto> salesMap = result.stream()
+                .collect(Collectors.toMap(ProductSalesDto::getProductSeqNo, dto -> dto));
+
+        // 상품별 판매량 세팅
+        productList.forEach(product -> {
+            ProductSalesDto dto = salesMap.get(product.getSeqNo());
+
+            if (dto != null) {
+                product.setTotalSales(dto.getTotalSales());
+            }
+        });
+
+        return productList.stream().map(ProductResponseDto.RecentSalesProduct::from).toList();
     }
 
     public ProductStock findProductStock(List<ProductStock> productStocks, String productId){

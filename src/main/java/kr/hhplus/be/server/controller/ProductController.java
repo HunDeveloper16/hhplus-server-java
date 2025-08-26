@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/product")
@@ -30,6 +32,21 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto.ProductInfo> getBalance(@PathVariable String productId) {
 
         return ResponseEntity.ok(productService.getProductDetail(productId));
+    }
+
+    /**
+     * 상위 상품 조회 API
+     *
+     * 요구사항
+     * 1. 최근 3일간 가장 많이 팔린 상위 5개 상품 정보를 제공하는 API 를 작성합니다.
+     * 2. 통계 정보를 다루기 위한 기술적 고민을 충분히 해보도록 합니다.
+     *
+     * @return 최근 3일간 가장 많이 팔린 상위 5개 상품 정보
+     */
+    @GetMapping("/recent/sales")
+    public ResponseEntity<List<ProductResponseDto.RecentSalesProduct>> getRecentSales() {
+
+        return ResponseEntity.ok(productService.getRecentSalesTop5Ranking());
     }
 
 }
