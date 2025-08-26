@@ -53,7 +53,7 @@ public class ProductService {
                 .map(ProductOrderRequest.OrderProduct::getProductId)
                 .collect(Collectors.toList());
 
-        // 상품 재고 조회
+        // 상품 재고 조회. FETCH JOIN
         List<ProductStock> productStocks = getValidateProductStocksByProductIds(productIds);
 
         long totalAmount = 0L;
@@ -69,6 +69,8 @@ public class ProductService {
             // 히스토리 생성
             stockHistories.add(ProductStockHistory.builder()
                     .productStock(productStock)
+                    .productSeqNo(productStock.getSeqNo())
+                    .productName(productStock.getProduct().getName())
                     .quantity(orderProduct.getQuantity())
                     .type(StockHistoryType.ORDER)
                     .orderNo(orderRequest.getOrderNo())

@@ -26,6 +26,12 @@ public class ProductStockHistory {
     @JoinColumn(name = "STOCK_SEQ_NO", nullable = false)
     private ProductStock productStock;
 
+    @Column(name = "PRODUCT_SEQ_NO", nullable = false)
+    private Long productSeqNo;
+
+    @Column(name = "PRODUCT_NAME", nullable = false)
+    private String productName;
+
     @Column(name = "QUANTITY", nullable = false)
     private Long quantity;
 
