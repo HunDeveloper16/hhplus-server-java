@@ -36,15 +36,11 @@ public class CouponService {
     /**
      * 선착순으로 쿠폰을 발급합니다.
      *
-     * 쿠폰과 쿠폰 발급 정보를 FETCH JOIN하면 대용량 데이터일때, 문제가 될 수 있음.
-     * 따라서 현재 size()만 필요한 상황이므로, 모두 FETCH JOIN하지않고 count()쿼리를 직접 실행.
-     *
-     * 1.락 타임아웃은 3초.
-     * 2.전체 트랜잭션 처리시간 10초로 설정.
-     *
+     * TODO : 선착순 발급 처리
      *
      * @param request 발급 요청 정보
      */
+    @Transactional
     public void issueCouponsByArrivalOrder(CouponRequestDto.Issue request) {
         // 요청 값 검증
         request.validateRequest();

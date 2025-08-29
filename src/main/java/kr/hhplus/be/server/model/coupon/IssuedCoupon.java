@@ -52,6 +52,7 @@ public class IssuedCoupon {
                 .userId(userId)
                 .couponCode(generateCouponCode())
                 .status(IssuedCouponStatus.ISSUED)
+                .regDt(LocalDateTime.now())
                 .build();
     }
 
