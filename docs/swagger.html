@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui.css" />
+</head>
+<body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-bundle.js"></script>
+    <script>
+        const apiSpec =
+            {"openapi":"3.0.1","info":{"title":"OpenAPI definition","version":"v0"},"servers":[{"url":"http://localhost:8080","description":"Generated server url"}],"paths":{"/api/user/balance/charge":{"post":{"tags":["user-controller"],"operationId":"chargeBalance","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Charge"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object"}}}}}}},"/api/order/payment":{"post":{"tags":["order-controller"],"operationId":"orderPayment","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Order"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object"}}}}}}},"/api/coupon/me/{userId}":{"post":{"tags":["coupon-controller"],"operationId":"getUserCouponList","parameters":[{"name":"userId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/UserCoupon"}}}}}}}},"/api/coupon/issue":{"post":{"tags":["coupon-controller"],"operationId":"couponIssue","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Issue"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object"}}}}}}},"/api/user/{userId}/balance":{"get":{"tags":["user-controller"],"operationId":"getBalance","parameters":[{"name":"userId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"integer","format":"int64"}}}}}}},"/api/product/{productId}":{"get":{"tags":["product-controller"],"operationId":"getBalance_1","parameters":[{"name":"productId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ProductInfo"}}}}}}},"/api/product/recent/sales":{"get":{"tags":["product-controller"],"operationId":"getRecentSales","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/RecentSalesProduct"}}}}}}}}},"components":{"schemas":{"Charge":{"type":"object","properties":{"userId":{"type":"string"},"amount":{"type":"integer","format":"int64"}}},"Order":{"type":"object","properties":{"userId":{"type":"string"},"couponId":{"type":"string"},"orderProductList":{"type":"array","items":{"$ref":"#/components/schemas/OrderProduct"}}}},"OrderProduct":{"type":"object","properties":{"productId":{"type":"string"},"quantity":{"type":"integer","format":"int64"}}},"UserCoupon":{"type":"object","properties":{"name":{"type":"string"},"couponId":{"type":"string"},"couponCode":{"type":"string"}}},"Issue":{"type":"object","properties":{"couponId":{"type":"string"},"userId":{"type":"string"}}},"ProductInfo":{"type":"object"},"RecentSalesProduct":{"type":"object"}}}}
+        ;
+
+        SwaggerUIBundle({
+            spec: apiSpec,
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.presets.standalone
+            ]
+        });
+    </script>
+</body>
+</html>
