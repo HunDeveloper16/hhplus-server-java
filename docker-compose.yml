@@ -12,6 +12,16 @@ services:
     volumes:
       - ./data/mysql/:/var/lib/mysql
 
+  redis: # Redis 서비스 추가
+    image: redis:7-alpine
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - ./data/redis/:/data  # Redis 데이터 영속화
+    restart: unless-stopped
+
 networks:
   default:
     driver: bridge
