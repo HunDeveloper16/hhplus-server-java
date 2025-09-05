@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.service;
 
-import kr.hhplus.be.server.repository.coupon.CouponRepository;
-import kr.hhplus.be.server.repository.coupon.CouponUsageHistoryRepository;
-import kr.hhplus.be.server.repository.coupon.IssuedCouponRepository;
+import kr.hhplus.be.server.layerd.repository.coupon.CouponRepository;
+import kr.hhplus.be.server.layerd.repository.coupon.CouponUsageHistoryRepository;
+import kr.hhplus.be.server.layerd.repository.coupon.IssuedCouponRepository;
+import kr.hhplus.be.server.layerd.service.CouponService;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

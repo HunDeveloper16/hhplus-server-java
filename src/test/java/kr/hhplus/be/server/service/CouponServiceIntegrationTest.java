@@ -1,14 +1,13 @@
 package kr.hhplus.be.server.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import kr.hhplus.be.server.common.enums.CouponStatus;
 import kr.hhplus.be.server.common.enums.DiscountType;
-import kr.hhplus.be.server.dto.coupon.CouponRequestDto;
-import kr.hhplus.be.server.model.coupon.Coupon;
-import kr.hhplus.be.server.model.coupon.IssuedCoupon;
-import kr.hhplus.be.server.repository.coupon.CouponRepository;
-import kr.hhplus.be.server.repository.coupon.IssuedCouponRepository;
+import kr.hhplus.be.server.layerd.dto.coupon.CouponRequestDto;
+import kr.hhplus.be.server.layerd.model.coupon.Coupon;
+import kr.hhplus.be.server.layerd.model.coupon.IssuedCoupon;
+import kr.hhplus.be.server.layerd.repository.coupon.CouponRepository;
+import kr.hhplus.be.server.layerd.repository.coupon.IssuedCouponRepository;
+import kr.hhplus.be.server.layerd.service.CouponService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
