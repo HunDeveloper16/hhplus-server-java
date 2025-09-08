@@ -28,11 +28,11 @@ public class OrderController {
      */
     @PostMapping("/payment")
     public ResponseEntity<?> orderPayment(@RequestBody OrderRequestDto.Order order) {
-        // DTO → Command 변환
-        OrderCommand command = OrderCommand.from(order);
-
         // 웹 계층 검증
         order.validateOrderItem();
+
+        // DTO → Command 변환
+        OrderCommand command = OrderCommand.from(order);
 
         // 서비스 로직 command 전달
         orderService.order(command);

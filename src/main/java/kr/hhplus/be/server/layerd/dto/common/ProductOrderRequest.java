@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.layerd.dto.common;
 
-import kr.hhplus.be.server.layerd.dto.order.OrderRequestDto;
+import kr.hhplus.be.server.clean.application.OrderCommand;
+import kr.hhplus.be.server.clean.application.OrderItemCommand;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class ProductOrderRequest {
     private List<OrderProduct> orderProductList;
 
     // 주문 요청 -> 상품 주문 요청
-    public static ProductOrderRequest of(String orderNo,OrderRequestDto.Order order){
+    public static ProductOrderRequest of(String orderNo, OrderCommand order){
         return ProductOrderRequest.builder()
                 .orderNo(orderNo)
                 .orderProductList(order.getOrderProductList().stream().map(OrderProduct::from).toList())
@@ -33,7 +34,7 @@ public class ProductOrderRequest {
         private String productId;
         private Long quantity;
 
-        public static OrderProduct from(OrderRequestDto.OrderProduct product){
+        public static OrderProduct from(OrderItemCommand product){
             return OrderProduct.builder()
                     .productId(product.getProductId())
                     .quantity(product.getQuantity())

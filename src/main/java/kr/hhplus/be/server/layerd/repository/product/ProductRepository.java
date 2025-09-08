@@ -18,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     /**
      * 상품 일련번호 IN 쿼리
      *
-     * @param productSeqNos 상품 일련 번호 모곩
+     * @param productSeqNos 상품 일련 번호 목록
      */
     @Query("SELECT p FROM Product p WHERE p.seqNo IN :productSeqNos")
     List<Product> findProductByProductSeqNos(@Param("productSeqNos") List<Long> productSeqNos);

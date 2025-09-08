@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.layerd.dto.common;
 
-import kr.hhplus.be.server.layerd.dto.order.OrderRequestDto;
+import kr.hhplus.be.server.clean.application.OrderCommand;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class CouponOrderRequest {
     private Long totalAmount;
 
     // 주문 요청 -> 쿠폰 주문 요청
-    public static CouponOrderRequest of(String orderNo,OrderRequestDto.Order order,Long totalAmount){
+    public static CouponOrderRequest of(String orderNo, OrderCommand order, Long totalAmount){
         return CouponOrderRequest.builder()
                 .orderNo(orderNo)
                 .couponId(order.getCouponId())

@@ -2,14 +2,14 @@ package kr.hhplus.be.server.clean.infrastructure.persistence;
 
 import kr.hhplus.be.server.clean.domain.model.Order;
 import kr.hhplus.be.server.clean.domain.repository.OrderRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
-@Repository
-@RequiredArgsConstructor
 public class OrderJpaRepository implements OrderRepository {
 
     private final SpringOrderJpa jpa; // 내부 JPA Repo ??
+
+    public OrderJpaRepository(SpringOrderJpa springOrderJpa){
+        this.jpa = springOrderJpa;
+    }
 
     @Override
     public Order save(Order order) {
